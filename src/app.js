@@ -792,33 +792,41 @@ function finishMatch(winner) {
     elapsed: (m.endedAt || Date.now()) - m.startedAt,
     confetti: !!winner && !winner.isAI,
   };
+  m.result = view.modal;
   render();
 }
 
-function boardMarkup({ board, marked, linesIdx, size, name, accent, active, canTap, playerIndex, lastValue, words, target, showTarget = true, showStamp }) {
+function boardMarkup({ board, marked, linesIdx, size, name, accent, active, canTap, playerIndex, lastValue, words, target, showTarget = true, showStamp, hidden = false, hiddenNote = '종료 후 공개' }) {
   const lineCells = new Set();
   for (const li of linesIdx) for (const c of linesOf(size)[li]) lineCells.add(c);
-  const cells = board.map((value, i) => {
-    const cls = ['cell'];
-    if (words) cls.push('is-word');
-    if (marked[i]) cls.push('is-marked');
-    if (lineCells.has(i)) cls.push('is-line');
-    if (value === lastValue) cls.push('is-last');
-    const disabled = !canTap || marked[i];
-    return `<button type="button" class="${cls.join(' ')}" data-action="call" data-player="${playerIndex}" data-cell="${i}" data-value="${esc(value)}" data-focus-key="p${playerIndex}c${i}" ${disabled ? 'disabled' : ''} aria-label="${esc(value)}${marked[i] ? ' · 이미 부름' : ''}">${esc(value)}</button>`;
-  }).join('');
+  // 가려진 보드는 칸 값을 화면·DOM 어디에도 남기지 않습니다(값 대신 ? 만 그림).
+  const cells = hidden
+    ? Array.from({ length: board.length }, () => '<span class="cell is-locked" aria-hidden="true">?</span>').join('')
+    : board.map((value, i) => {
+      const cls = ['cell'];
+      if (words) cls.push('is-word');
+      if (marked[i]) cls.push('is-marked');
+      if (lineCells.has(i)) cls.push('is-line');
+      if (value === lastValue) cls.push('is-last');
+      const disabled = !canTap || marked[i];
+      return `<button type="button" class="${cls.join(' ')}" data-action="call" data-player="${playerIndex}" data-cell="${i}" data-value="${esc(value)}" data-focus-key="p${playerIndex}c${i}" ${disabled ? 'disabled' : ''} aria-label="${esc(value)}${marked[i] ? ' · 이미 부름' : ''}">${esc(value)}</button>`;
+    }).join('');
 
   return `
-  <section class="board-card${active ? ' is-turn' : ''}" data-accent="${accent}">
+  <section class="board-card${active ? ' is-turn' : ''}${hidden ? ' is-secret' : ''}" data-accent="${accent}">
     <header class="board-head">
       <span class="board-name"><i class="dot" aria-hidden="true"></i>${esc(name)}</span>
-      ${showTarget ? `<span class="board-lines"><b>${linesIdx.length}</b>/${target}줄</span>` : ''}
+      <span class="board-meta">
+        ${showStamp && !hidden && linesIdx.length ? `<span class="bingo-stamp">BINGO ×${linesIdx.length}</span>` : ''}
+        ${showTarget ? `<span class="board-lines"><b>${linesIdx.length}</b>/${target}줄</span>` : ''}
+      </span>
     </header>
-    <div class="board" data-lines="${linesIdx.join(',')}" data-size="${size}">
+    <div class="board${hidden ? ' is-hidden' : ''}" data-lines="${hidden ? '' : linesIdx.join(',')}" data-size="${size}">
       ${cells}
-      <div class="line-layer" aria-hidden="true"></div>
+      ${hidden
+        ? `<div class="board-mask"><span class="mask-lock" aria-hidden="true">🔒</span><b>게임 중 비공개</b><small>${esc(hiddenNote)}</small></div>`
+        : '<div class="line-layer" aria-hidden="true"></div>'}
     </div>
-    ${showStamp && linesIdx.length ? `<span class="bingo-stamp">BINGO ×${linesIdx.length}</span>` : ''}
   </section>`;
 }
 
@@ -833,7 +841,7 @@ function playView() {
   const recent = m.called.slice(-8).reverse();
 
   const banner = m.finished
-    ? '🏁 경기가 끝났어요'
+    ? '🏁 경기 종료 — 모든 보드가 공개됐어요'
     : m.curtainUp
       ? '🙈 가림막이 쳐져 있어요 — 준비되면 보드를 열어 주세요'
       : m.thinking
@@ -854,8 +862,16 @@ function playView() {
     words,
     target: m.target,
     showStamp: true,
+    // 게임 중에는 AI 보드(AI 대전)와 다른 사람 보드(로컬 대전)의 숫자를 가립니다.
+    hidden: !m.finished && (p.isAI || (m.mode === 'local' && i !== m.turn)),
+    hiddenNote: p.isAI ? '종료 후 공개' : `${p.name} 차례에 공개`,
   })).join('');
 
+  const privacyHint = m.finished
+    ? '경기가 끝나 모든 보드가 공개됐어요. 어디서 빙고가 났는지 복기해 보세요.'
+    : m.mode === 'ai'
+      ? 'AI 보드는 게임 중에 가려집니다. AI의 빙고 줄 수와 진행 바는 계속 볼 수 있어요.'
+      : '지금 차례인 사람의 보드만 보입니다. 다른 보드는 그 사람 차례에 열려요.';
   const rows = players.map((p, i) => `
     <div class="lines-row" data-accent="${p.accent}">
       <span class="lines-name"><i class="dot" aria-hidden="true"></i>${esc(p.name)}</span>
@@ -898,7 +914,8 @@ function playView() {
         ${rows}
       </div>
       <div class="panel-block">
-        <p class="hint">부른 칸은 모든 보드에 함께 표시됩니다. 목표 ${m.target}줄을 먼저 완성하면 승리!</p>
+        <p class="hint">${privacyHint}</p>
+        ${m.finished && !view.modal ? '<button type="button" class="btn btn-block" data-action="show-result">결과 다시 보기</button>' : ''}
         <button type="button" class="btn btn-block" data-action="restart">같은 설정으로 다시</button>
       </div>
     </aside>
@@ -1077,6 +1094,7 @@ function modalView() {
         <button type="button" class="btn btn-primary" data-action="modal-restart">같은 설정으로 다시</button>
         <button type="button" class="btn" data-action="modal-home">다른 판 고르기</button>
       </div>
+      <button type="button" class="btn btn-block" data-action="modal-board">보드 확인 — 어디서 빙고가 났는지 보기</button>
     </div>
   </div>`;
 }
@@ -1361,6 +1379,18 @@ function onAppClick(event) {
       break;
     case 'modal-restart':
       restartAction();
+      break;
+    case 'modal-board':
+      view.modal = null;
+      sfx.tap();
+      render();
+      break;
+    case 'show-result':
+      if (view.match?.result) {
+        view.modal = { ...view.match.result, confetti: false };
+        sfx.tap();
+        render();
+      }
       break;
     case 'modal-home':
       view.modal = null;
