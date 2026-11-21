@@ -1,33 +1,52 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="day">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>빙고 · 준비 중 · BMR APPS</title>
-<meta name="description" content="빙고 — 준비 중인 페이지입니다 (BMR APPS)">
-<meta name="theme-color" content="#0abbee">
+<title>빙고 · AI 대전 · 로컬 대전 · 사회자 추첨</title>
+<meta name="description" content="로그인 없이 바로 즐기는 빙고. AI와 대결하고, 한 기기로 2~4명이 돌아가며, 사회자로 큰 볼을 뽑습니다. 숫자·테마·내 단어로 판을 만들고 기록은 이 브라우저에 저장됩니다.">
+<meta name="theme-color" content="#fbf7ea">
+<meta name="color-scheme" content="light dark">
 <meta name="robots" content="noindex">
-<link rel="icon" href="https://wjvqavianqceeyyxonfg.supabase.co/functions/v1/hub-favicon?slug=bingo">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
 </head>
 <body>
-<!-- 준비 중 안내 페이지입니다. 앱을 만들면 이 파일(index.html)을 내 앱 화면으로 바꾸세요.
-     개발에 필요한 정보는 BMR APPS 허브의 '내 서비스 정보 → 개발 정보'와 저장소 README.md 에 있습니다. -->
+<a class="skip" href="#app">본문으로 바로 가기</a>
+
 <header class="top">
-  <a class="mark" href="https://bmrgoodway.github.io/" aria-label="BMR APPS 메인 화면"><span>BMR</span><span>APPS</span></a>
+  <a class="mark" href="./" aria-label="빙고 처음 화면으로">
+    <svg viewBox="0 0 48 48" role="img" aria-hidden="true" focusable="false">
+      <rect x="1" y="1" width="46" height="46" fill="#0abbee" stroke="#101014" stroke-width="2"/>
+      <g fill="#ffffff" stroke="#101014" stroke-width="1.3">
+        <rect x="5" y="5" width="9" height="9"/><rect x="15" y="5" width="9" height="9"/><rect x="25" y="5" width="9" height="9"/><rect x="35" y="5" width="9" height="9"/>
+        <rect x="5" y="15" width="9" height="9"/><rect x="15" y="15" width="9" height="9"/><rect x="25" y="15" width="9" height="9"/><rect x="35" y="15" width="9" height="9"/>
+        <rect x="5" y="25" width="9" height="9"/><rect x="15" y="25" width="9" height="9"/><rect x="25" y="25" width="9" height="9"/><rect x="35" y="25" width="9" height="9"/>
+        <rect x="5" y="35" width="9" height="9"/><rect x="15" y="35" width="9" height="9"/><rect x="25" y="35" width="9" height="9"/><rect x="35" y="35" width="9" height="9"/>
+      </g>
+      <rect x="5" y="5" width="39" height="9" fill="#ffdc1a" stroke="#101014" stroke-width="1.6"/>
+      <rect x="25" y="25" width="9" height="9" fill="#02c245" stroke="#101014" stroke-width="1.6"/>
+    </svg>
+  </a>
+  <div class="brand">
+    <b>빙고</b>
+    <small>GOODWAY APPS · BINGO</small>
+  </div>
+
+  <nav class="nav" aria-label="화면 설정">
+    <button type="button" class="icon-btn" id="btn-sound" aria-pressed="true" aria-label="효과음 켜짐" title="효과음">♪</button>
+    <button type="button" class="icon-btn" id="btn-theme" aria-pressed="false" aria-label="밤 화면으로 바꾸기" title="낮/밤 화면">☾</button>
+  </nav>
 </header>
-<main class="wrap">
-  <section class="hero">
-    <div class="copy">
-      <span class="eyebrow">준비 중</span>
-      <h1 data-app-name>빙고</h1>
-      <p class="desc" data-app-desc hidden></p>
-      <p class="notice"><b>준비 중인 페이지입니다.</b> 곧 이 주소에서 서비스를 열 예정이에요.</p>
-      <a class="btn" href="https://bmrgoodway.github.io/">BMR APPS 서비스 둘러보기</a>
-    </div>
-    <div class="art" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i><i class="e"></i><i class="f"></i></div>
-  </section>
+
+<main id="app" tabindex="-1">
+  <noscript><p class="card">이 앱은 브라우저에서 바로 실행됩니다. 자바스크립트를 켜 주세요.</p></noscript>
 </main>
-<footer class="foot">별무리 개발자들이 함께 만들고 나누는 공간 · <a href="https://bmrgoodway.github.io/">BMR APPS</a></footer>
+
+<footer class="foot">
+  <p><b>빙고</b> — 숫자·테마·추첨으로 즐기는 빙고 · <a href="https://bmrgoodway.github.io/">GOODWAY APPS</a></p>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script type="module" src="/src/main.js"></script>
 </body>
 </html>
