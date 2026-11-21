@@ -339,7 +339,7 @@ small { font-size: 12px; }
 .board-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
 .board-name { display: flex; align-items: center; gap: 6px; font-weight: 900; font-size: 14px; min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dot { width: 10px; height: 10px; flex: none; display: inline-block; background: var(--accent, var(--cyan)); border: 1.5px solid var(--line); }
-.board-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+.board-meta { display: flex; align-items: center; gap: 10px; flex: none; }
 .board-lines { font-size: 12px; font-weight: 800; color: var(--muted); white-space: nowrap; }
 .board-lines b { font-size: 16px; color: var(--ink); }
 
@@ -384,7 +384,7 @@ small { font-size: 12px; }
 .bingo-stamp {
   display: inline-block; background: var(--green); color: #04170a; border: var(--bw) solid #101014;
   padding: 2px 6px; font-weight: 900; font-size: 11px; line-height: 1.2; white-space: nowrap;
-  transform: rotate(-4deg); box-shadow: 2px 2px 0 #101014;
+  transform: rotate(-3deg); box-shadow: 2px 2px 0 #101014;
 }
 
 /* ── 게임 중 가려진 상대 보드 ─────────────────────────────────────────── */
