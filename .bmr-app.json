@@ -1,0 +1,12 @@
+{
+  "slug": "bingo",
+  "name": "빙고",
+  "schema": "bingo",
+  "db_role": "bingo_dev",
+  "bucket": "bingo",
+  "function": "bingo-fn",
+  "secret_prefix": "BINGO_",
+  "supabase_ref": "wjvqavianqceeyyxonfg",
+  "url": "https://bmrgoodway.github.io/bingo/",
+  "template": "bmr-app-templates v2"
+}
